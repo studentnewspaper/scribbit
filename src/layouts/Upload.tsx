@@ -21,12 +21,12 @@ export const UploadPage: FC<UploadPageProps> = ({ onDone, ...props }) => {
     <div
       {...getRootProps()}
       className={clsx(
-        "h-full flex flex-col items-center justify-center text-center group",
+        "h-full flex flex-col items-center justify-center text-center cursor-pointer",
         props.className
       )}
     >
       <input {...getInputProps()} />
-      <h1 className="text-4xl md:text-6xl font-bold tracking-tighter group-hover:text-blue-700 transition-colors">
+      <h1 className="text-4xl md:text-6xl font-bold tracking-tighter hover:text-blue-700 transition-colors">
         {isDragActive ? "Drop" : "Upload"} Scribus file
       </h1>
       <p className="mt-2 md:mt-4 text-gray-500">
