@@ -13,7 +13,7 @@ const sections = [
   "Features",
   "Voices",
   "Art",
-  "File & TV",
+  "Film & TV",
   "Music",
   "Theatre",
   "Literature",
