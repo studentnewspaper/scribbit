@@ -3,7 +3,7 @@ import { Flag, Result, Test, TestContext, TestInfo } from "./test";
 import { Document } from "./document";
 import { expose } from "comlink";
 import * as Sentry from "@sentry/react";
-import { makePageFilename } from "../lib/utils";
+import { makePageFilename, makePageNumberText } from "../lib/utils";
 
 Sentry.init({
   dsn: "https://f5ccc3eddf4b4c7cb656355f0af02b6b@o431302.ingest.sentry.io/5992031",
@@ -19,7 +19,9 @@ export type ResultWithInfo = Result & TestInfo;
 function analyseFile(fileContents: string, ctx: TestContext): ResultWithInfo[] {
   Sentry.setContext("file", {
     filename: ctx.filename,
-    pages: makePageFilename(ctx.pages),
+    pages: ctx.pages
+      .map((page) => `${makePageNumberText(page.number)} ${page.section}`)
+      .join(", "),
   });
 
   const parsed = parse(
