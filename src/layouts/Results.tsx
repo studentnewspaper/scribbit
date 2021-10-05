@@ -118,9 +118,8 @@ export const ResultsPage: FC<ResultsPageProps> = ({
         Copyediting channel.
         <br />
         <span className="italic text-gray-600">
-          e.g. <output>Editions</output> &rarr; <output>2021 Sep - Dec</output>{" "}
-          &rarr; <output>Edition 3</output> &rarr;{" "}
-          <output>{pageFilename}</output>
+          e.g. Editions &rarr; 2021 Sep - Dec &rarr; Edition 3 &rarr;{" "}
+          {pageFilename}
         </span>
       </>
     );
