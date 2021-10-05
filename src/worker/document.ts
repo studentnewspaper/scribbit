@@ -49,9 +49,9 @@ export class Document {
         obj.StoryText == null
           ? undefined
           : (() => {
-              const textSelections = (obj.StoryText as any[]).flatMap(
+              const textSelections = ((obj.StoryText ?? []) as any[]).flatMap(
                 (storyText) =>
-                  (storyText.ITEXT as any[]).flatMap((text) => ({
+                  ((storyText.ITEXT ?? []) as any[]).flatMap((text) => ({
                     text: text.CH as string,
                     fontFamily: text.FONT as string | undefined,
                     fontSize: text.FONTSIZE as string | undefined,
