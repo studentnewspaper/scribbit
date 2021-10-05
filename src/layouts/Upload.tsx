@@ -40,14 +40,20 @@ export const UploadPage: FC<UploadPageProps> = ({ onDone, ...props }) => {
       <div className="mt-2 md:mt-4 text-gray-500">
         Click to browse, or drop file here.
       </div>
-      <div className="absolute bottom-8 text-gray-400 space-x-1">
-        {offlineReady && (
-          <>
-            <span className="text-blue-500">App available offline</span>
-            <span>&mdash;</span>
-          </>
-        )}
-        <span>{commit ?? "Development build"}</span>
+      <div className="absolute bottom-8">
+        <div
+          className={clsx(
+            "text-blue-600 transition-opacity",
+            offlineReady ? "opacity-100" : "opacity-0"
+          )}
+        >
+          App available offline
+        </div>
+        <div className="space-x-1 text-gray-300">
+          <span>{commit ?? "Development build"}</span>
+          <span>&mdash;</span>
+          <span>Nicholas Bush</span>
+        </div>
       </div>
     </div>
   );
