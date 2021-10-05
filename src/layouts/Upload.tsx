@@ -47,7 +47,7 @@ export const UploadPage: FC<UploadPageProps> = ({ onDone, ...props }) => {
             <span>&mdash;</span>
           </>
         )}
-        <span>{commit?.slice(0, 8) ?? "Development build"}</span>
+        <span>{commit ?? "Development build"}</span>
       </div>
     </div>
   );
