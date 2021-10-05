@@ -31,23 +31,23 @@ export function parsePageFilename(filename: string): PageInfo[] | null {
       // Single page: 24 Features.sla
       regex: /^(\d{1,2}) (.+)\.sla$/g,
       onMatch: (groups) => [
-        { number: parseInt(groups[0]), section: groups[1] },
+        { number: parseInt(groups[0]), section: groups[1].trim() },
       ],
     },
     {
       // Double spread in same section
       regex: /^(\d{1,2})-(\d{1,2}) (.+).sla$/g,
       onMatch: (groups) => [
-        { number: parseInt(groups[0]), section: groups[2] },
-        { number: parseInt(groups[1]), section: groups[2] },
+        { number: parseInt(groups[0]), section: groups[2].trim() },
+        { number: parseInt(groups[1]), section: groups[2].trim() },
       ],
     },
     {
       // Double spread across sections
       regex: /^(\d{1,2})-(\d{1,2}) (.+)-(.+).sla$/g,
       onMatch: (groups) => [
-        { number: parseInt(groups[0]), section: groups[2] },
-        { number: parseInt(groups[1]), section: groups[3] },
+        { number: parseInt(groups[0]), section: groups[2].trim() },
+        { number: parseInt(groups[1]), section: groups[3].trim() },
       ],
     },
   ];
