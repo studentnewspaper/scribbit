@@ -12,9 +12,7 @@ Sentry.init({
 
 ReactDOM.render(
   <React.StrictMode>
-    <Sentry.ErrorBoundary
-      fallback={<p>An error occurred, and has been reported</p>}
-    >
+    <Sentry.ErrorBoundary fallback={ErrorPage}>
       <App />
     </Sentry.ErrorBoundary>
   </React.StrictMode>,
