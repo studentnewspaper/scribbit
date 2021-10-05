@@ -26,6 +26,8 @@ const staticAssets = [
     .map((file) => `icons/${file}`),
 ];
 
+process.env.VITE_COMMIT = process.env.COMMIT_REF ?? undefined;
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [

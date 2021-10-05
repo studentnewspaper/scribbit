@@ -5,10 +5,12 @@ import { expose } from "comlink";
 import * as Sentry from "@sentry/react";
 import { makePageFilename, makePageNumberText } from "../lib/utils";
 
+const commit = import.meta.env.VITE_COMMIT ?? undefined;
 Sentry.init({
   dsn: "https://f5ccc3eddf4b4c7cb656355f0af02b6b@o431302.ingest.sentry.io/5992031",
   environment: import.meta.env.MODE,
   enabled: import.meta.env.PROD,
+  release: commit,
 });
 
 const testModules: { test: Test }[] = Object.values(
