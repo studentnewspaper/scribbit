@@ -43,7 +43,7 @@ export const UploadPage: FC<UploadPageProps> = ({ onDone, ...props }) => {
       <div className="absolute bottom-8 text-gray-400 space-x-1">
         {offlineReady && (
           <>
-            <span className="text-blue-400">App available offline</span>
+            <span className="text-blue-500">App available offline</span>
             <span>&mdash;</span>
           </>
         )}
