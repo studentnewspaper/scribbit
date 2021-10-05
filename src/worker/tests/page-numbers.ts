@@ -15,7 +15,7 @@ export const test: Test = {
     const problems: Result[] = [];
 
     for (const page of doc.pages) {
-      const isLhs = page.index % 2 == 0;
+      const isLhs = ctx.pages[page.index].number % 2 == 0;
       const pageNumber = ctx.pages[page.index].number;
 
       const expectedNumberText = makePageNumberText(pageNumber);
@@ -34,11 +34,13 @@ export const test: Test = {
         });
 
       if (hasNumber) continue;
+
+      const expectedSide = isLhs ? "left" : "right";
       problems.push(
         fail(
           `Page ${
             page.index + 1
-          } does not have a ${expectedNumberText} page number`
+          } does not have a ${expectedNumberText} page number on ${expectedSide}`
         )
       );
     }
