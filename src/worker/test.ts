@@ -26,13 +26,17 @@ export type TestContext = {
   pages: PageInfo[];
 };
 
+export type TestInput = TestContext & {
+  hasImages: boolean;
+};
+
 export type TestInfo = {
   name: string;
   description?: string;
 };
 
 export type Test = {
-  exec: (doc: Document, ctx: TestContext) => Result[];
+  exec: (doc: Document, ctx: TestInput) => Result[];
 } & TestInfo;
 
 export function pass(message?: string): Result {

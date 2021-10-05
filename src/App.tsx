@@ -6,15 +6,24 @@ import UploadPage from "./layouts/Upload";
 import type { PageInfo } from "./worker/test";
 
 export const App: FC = ({}) => {
-  const [PageInfos, setPageInfos] = useState<PageInfo[] | null>(null);
+  const [pages, setPages] = useState<PageInfo[] | null>(null);
   const [file, setFile] = useState<File | null>(null);
 
-  if (file != null && PageInfos != null) {
-    return <ResultsPage PageInfos={PageInfos} file={file} />;
+  if (file != null && pages != null) {
+    return (
+      <ResultsPage
+        pages={pages}
+        file={file}
+        onReset={() => {
+          setPages(null);
+          setFile(null);
+        }}
+      />
+    );
   }
 
   if (file != null) {
-    return <SettingsPage onDone={setPageInfos} filename={file.name} />;
+    return <SettingsPage onDone={setPages} filename={file.name} />;
   }
 
   return <UploadPage onDone={setFile} />;

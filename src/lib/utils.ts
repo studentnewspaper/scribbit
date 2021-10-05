@@ -11,15 +11,15 @@ export function makePageNumberText(n: number): string {
 export function makePageFilename(pages: PageInfo[]): string {
   if (pages.length == 1) {
     const page = pages[0];
-    return `${makePageNumberText(page.number)} ${page.section}.sla`;
+    return `${makePageNumberText(page.number)} ${page.section}`;
   }
 
   const pageNumbers = pages.map((p) => makePageNumberText(p.number)).join("-");
   if (pages[0].section == pages[1].section) {
-    return `${pageNumbers} ${pages[0].section}.sla`;
+    return `${pageNumbers} ${pages[0].section}`;
   }
 
-  return `${pageNumbers} ${pages[0].section}-${pages[1].section}.sla`;
+  return `${pageNumbers} ${pages[0].section}-${pages[1].section}`;
 }
 
 export function parsePageFilename(filename: string): PageInfo[] | null {

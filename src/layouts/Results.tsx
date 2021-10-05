@@ -3,13 +3,15 @@ import React, {
   FC,
   Fragment,
   HTMLAttributes,
+  ReactNode,
   useEffect,
   useState,
 } from "react";
-import { flagConfig, FlagImportance } from "../lib/utils";
+import { flagConfig, makePageFilename } from "../lib/utils";
 import { useValidator } from "../lib/useValidator";
 import type { ResultWithInfo } from "../worker/worker";
-import { Flag, PageInfo } from "../worker/test";
+import { Flag, PageInfo, TestInput } from "../worker/test";
+import Button from "../components/Button";
 
 export type ResultGroupProps = {
   flag: Flag;
@@ -22,10 +24,6 @@ export const ResultGroup: FC<ResultGroupProps> = ({
   ...props
 }) => {
   const flagMeta = flagConfig[flag];
-
-  const [expanded, isExpanded] = useState(
-    [FlagImportance.High, FlagImportance.Medium].includes(flagMeta.importance)
-  );
 
   return (
     <div
@@ -67,7 +65,8 @@ export const ResultGroup: FC<ResultGroupProps> = ({
 
 export type ResultsPageProps = {
   file: File;
-  PageInfos: PageInfo[];
+  pages: PageInfo[];
+  onReset: () => void;
 } & HTMLAttributes<HTMLElement>;
 
 enum LoadingStatus {
@@ -78,11 +77,13 @@ enum LoadingStatus {
 
 export const ResultsPage: FC<ResultsPageProps> = ({
   file,
-  PageInfos,
+  pages,
+  onReset,
   ...props
 }) => {
   const validator = useValidator();
   const [results, setResults] = useState<ResultWithInfo[] | null>(null);
+  const [ctx, setCtx] = useState<TestInput | null>(null);
   const [loadingStatus, setLoadingStatus] = useState(LoadingStatus.LoadingText);
 
   useEffect(function loadResults() {
@@ -94,15 +95,66 @@ export const ResultsPage: FC<ResultsPageProps> = ({
       const fileContents = await file.text();
 
       setLoadingStatus(LoadingStatus.LoadingResults);
-      const results = await validator.analyseFile(fileContents, {
-        pages: PageInfos,
+      const { results, ctx } = await validator.analyseFile(fileContents, {
+        pages,
         filename: file.name,
       });
 
       setResults(results);
+      setCtx(ctx);
       setLoadingStatus(LoadingStatus.NotLoading);
     })();
   }, []);
+
+  const steps = (() => {
+    const steps: ReactNode[] = [];
+    if (results == null || ctx == null) return steps;
+
+    const pageFilename = makePageFilename(pages);
+
+    steps.push(
+      <>
+        Open the <output>{pageFilename}</output> folder in the files tab of the
+        Copyediting channel.
+        <br />
+        <span className="italic text-gray-600">
+          e.g. <output>Editions</output> &rarr; <output>2021 Sep - Dec</output>{" "}
+          &rarr; <output>Edition 3</output> &rarr;{" "}
+          <output>{pageFilename}</output>
+        </span>
+      </>
+    );
+
+    steps.push(
+      <>
+        Drag and drop <output>{pageFilename}.sla</output> into the folder, such
+        that it replaces the original file if one exists. Do not create any
+        aditional folders.
+      </>
+    );
+
+    if (ctx.hasImages) {
+      steps.push(
+        <>
+          If you have not added or modified any images in your edit, you can
+          skip this step. Open the <output>images</output> folder in the page
+          folder in Teams. Open the same folder on your computer (where Scribus
+          collected for output). Drag and drop the images from your computer
+          into the images folder. Do not drag and drop the images folder{" "}
+          <i>itself</i>, only the contents.
+        </>
+      );
+    }
+
+    steps.push(
+      <>
+        Open the tracking manifest spreadsheet, and remove your name from the{" "}
+        <output>Locked by</output> column. Increase the status by one.
+      </>
+    );
+
+    return steps;
+  })();
 
   return (
     <div {...props} className={clsx("", props.className)}>
@@ -127,6 +179,28 @@ export const ResultsPage: FC<ResultsPageProps> = ({
             ))}
         </div>
       )}
+      <div className="px-6 mt-6">
+        <div className="font-bold text-lg">Next steps</div>
+        <div className="text-gray-600">
+          If you are ready to submit your edits, follow these steps:
+        </div>
+        <ol className="mt-2 list-decimal space-y-2 marker:text-blue-600 marker:font-semibold">
+          {steps.map((step, i) => (
+            <li key={i} className="ml-8">
+              {step}
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div className="px-6 mt-6 pb-6">
+        <Button
+          onClick={() => {
+            onReset();
+          }}
+        >
+          New file
+        </Button>
+      </div>
     </div>
   );
 };

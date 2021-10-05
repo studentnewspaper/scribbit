@@ -1,9 +1,9 @@
 import { parse } from "fast-xml-parser";
-import { Flag, Result, Test, TestContext, TestInfo } from "./test";
+import { Flag, Result, Test, TestContext, TestInfo, TestInput } from "./test";
 import { Document } from "./document";
 import { expose } from "comlink";
 import * as Sentry from "@sentry/react";
-import { makePageFilename, makePageNumberText } from "../lib/utils";
+import { makePageFilename } from "../lib/utils";
 
 const commit = import.meta.env.VITE_COMMIT ?? undefined;
 Sentry.init({
@@ -19,12 +19,13 @@ const testModules: { test: Test }[] = Object.values(
 
 export type ResultWithInfo = Result & TestInfo;
 
-function analyseFile(fileContents: string, ctx: TestContext): ResultWithInfo[] {
+function analyseFile(
+  fileContents: string,
+  ctx: TestContext
+): { results: ResultWithInfo[]; ctx: TestInput } {
   Sentry.setContext("file", {
     filename: ctx.filename,
-    pages: ctx.pages
-      .map((page) => `${makePageNumberText(page.number)} ${page.section}`)
-      .join(", "),
+    pages: makePageFilename(ctx.pages),
   });
 
   const parsed = parse(
@@ -33,9 +34,11 @@ function analyseFile(fileContents: string, ctx: TestContext): ResultWithInfo[] {
     true
   );
 
+  const testInput: TestInput = { ...ctx, hasImages: false };
+
   const doc = new Document(parsed);
 
-  return testModules.flatMap((testModule): ResultWithInfo[] => {
+  const results = testModules.flatMap((testModule): ResultWithInfo[] => {
     const test = testModule.test;
     const testInfo: TestInfo = {
       name: test.name,
@@ -45,7 +48,9 @@ function analyseFile(fileContents: string, ctx: TestContext): ResultWithInfo[] {
     Sentry.setTag("test", test.name);
 
     try {
-      return test.exec(doc, ctx).map((result) => ({ ...result, ...testInfo }));
+      return test
+        .exec(doc, testInput)
+        .map((result) => ({ ...result, ...testInfo }));
     } catch (err) {
       Sentry.captureException(err, { tags: { test: test.name }, contexts: {} });
 
@@ -65,6 +70,8 @@ function analyseFile(fileContents: string, ctx: TestContext): ResultWithInfo[] {
       ];
     }
   });
+
+  return { results, ctx: testInput };
 }
 
 const exports = { analyseFile } as const;

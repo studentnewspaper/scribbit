@@ -4,10 +4,12 @@ import { info, fail, Result, Test, pass } from "../test";
 export const test: Test = {
   name: "Relative images",
   description: `Ensures images have been collected for output`,
-  exec: (doc) => {
+  exec: (doc, ctx) => {
     const messages: Result[] = [];
     const problems: Result[] = [];
+
     const images = doc.objects.filter((o) => o.type == ObjectType.Image);
+    ctx.hasImages = images.length > 0;
 
     for (const { src, x, y } of images) {
       const location = [x, y].join(", ");

@@ -5,7 +5,7 @@ export const test: Test = {
   name: "Filename",
   description: "Ensures filename is correct",
   exec: (doc, ctx) => {
-    const expectedFilename = makePageFilename(ctx.pages);
+    const expectedFilename = makePageFilename(ctx.pages) + ".sla";
     if (ctx.filename == expectedFilename) return [pass()];
 
     return [
