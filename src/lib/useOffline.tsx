@@ -19,6 +19,7 @@ export function useOffline() {
 export const OfflineProvider: FC = ({ children }) => {
   const {
     offlineReady: [offlineReady, setOfflineReady],
+    updateServiceWorker,
   } = useRegisterSW({
     onRegistered: (registration) => {
       if (registration != null) {
@@ -30,7 +31,7 @@ export const OfflineProvider: FC = ({ children }) => {
       }
     },
     onNeedRefresh: () => {
-      window.location.reload();
+      updateServiceWorker(true);
     },
     onRegisterError: (err) => {
       console.error(err);
