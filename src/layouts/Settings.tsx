@@ -193,7 +193,7 @@ export const SettingsPage: FC<SettingsPageProps> = ({
             {isDouble && <PageProperties ctx={rhsCtx} setCtx={setRhsCtx} />}
           </div>
           {warnings.length > 0 && (
-            <div className="mt-8">
+            <div className="mt-8 bg-yellow-100 rounded p-4 border border-yellow-400">
               <div className="font-bold text-lg">Warnings</div>
               <ul className="list-disc mt-1 space-y-0.5">
                 {warnings.map((warning, i) => (
@@ -205,7 +205,7 @@ export const SettingsPage: FC<SettingsPageProps> = ({
             </div>
           )}
           {errors.length > 0 && (
-            <div className="mt-4">
+            <div className="mt-4 bg-red-100 rounded p-4 border border-red-400">
               <div className="font-bold text-lg">Errors</div>
               <ul className="list-disc mt-1 space-y-0.5">
                 {errors.map((error, i) => (
