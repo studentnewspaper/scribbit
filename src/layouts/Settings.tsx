@@ -101,7 +101,7 @@ export const SettingsPage: FC<SettingsPageProps> = ({
 }) => {
   const [initialPageInfo] = useState(parsePageFilename(filename) ?? []);
 
-  const [isDouble, setIsDouble] = useState(false);
+  const [isDouble, setIsDouble] = useState(initialPageInfo.length == 2);
   const [lhsCtx, setLhsCtx] = useState<PageInfo>(
     initialPageInfo[0] ?? { number: 0, section: "" }
   );
