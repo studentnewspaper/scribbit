@@ -8,12 +8,9 @@ export enum Flag {
   Error = "error",
 }
 
-type Diff = [expected: string, actual: string];
-
 export type Result = {
   status: Flag;
   message?: string;
-  diff?: Diff;
 };
 
 export type PageInfo = {
@@ -43,8 +40,8 @@ export function pass(message?: string): Result {
   return { status: Flag.Pass, message };
 }
 
-export function fail(message?: string, diff?: Diff): Result {
-  return { status: Flag.Fail, message, diff };
+export function fail(message?: string): Result {
+  return { status: Flag.Fail, message };
 }
 
 export function info(message: string): Result {

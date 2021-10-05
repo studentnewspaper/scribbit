@@ -25,7 +25,9 @@ export const test: Test = {
 
       if (hasName) continue;
       problems.push(
-        fail(`Page ${pageNumber} does not have a ${sectionName} header`)
+        fail(
+          `Page ${pageNumber} does not have a <output>${sectionName}</output> header`
+        )
       );
     }
 

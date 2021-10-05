@@ -12,7 +12,7 @@ export const test: Test = {
     ctx.hasImages = images.length > 0;
 
     for (const { src, x, y } of images) {
-      const location = [x, y].join(", ");
+      const location = [x, y].map((n) => `${n}mm`).join(", ");
 
       if (src == null) {
         messages.push(
@@ -29,7 +29,7 @@ export const test: Test = {
 
       problems.push(
         fail(
-          `The image ${filename} has not been collected for output and will appear blank when opened`
+          `The image <output>${filename}</output> has not been collected for output and will appear blank when opened`
         )
       );
     }

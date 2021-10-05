@@ -15,7 +15,9 @@ export const test: Test = {
 
       const actualSize = makeSize(page.width, page.height);
       problems.push(
-        fail(`Page ${pageNumber} is the wrong size`, [expectedSize, actualSize])
+        fail(
+          `Page ${pageNumber} is the wrong size. Expected <output>${expectedSize}</output>, but document is <output>${actualSize}</output>`
+        )
       );
     }
 
