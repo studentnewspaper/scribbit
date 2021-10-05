@@ -169,70 +169,62 @@ export const SettingsPage: FC<SettingsPageProps> = ({
 
   return (
     <div {...props} className={clsx("h-full", props.className)}>
-      <form
-        onSubmit={onSubmit}
-        className="h-full flex flex-col justify-between"
-      >
-        <div className="overflow-y-auto">
-          <header className="px-5 py-6">
-            <div className="text-4xl font-bold tracking-tight">
-              Page settings
-            </div>
-          </header>
+      <form onSubmit={onSubmit} className="h-full relative">
+        <header className="px-5 py-6">
+          <div className="text-4xl font-bold tracking-tight">Page settings</div>
+        </header>
 
-          <div className="px-5 py-6 border-t">
-            <div className="flex flex-row items-center space-x-2 font-medium">
-              <input
-                id="isDoublePage"
-                type="checkbox"
-                checked={isDouble}
-                onChange={(e) => {
-                  setIsDouble(e.currentTarget.checked);
-                }}
-                autoFocus={initialPageInfo == null}
-              />
-              <label htmlFor="isDoublePage">Double spread</label>
-            </div>
-
-            <div className="mt-4 space-y-3">
-              <PageProperties ctx={lhsCtx} setCtx={setLhsCtx} />
-              {isDouble && <PageProperties ctx={rhsCtx} setCtx={setRhsCtx} />}
-            </div>
-            {warnings.length > 0 && (
-              <div className="mt-8">
-                <div className="font-bold text-lg">Warnings</div>
-                <ul className="list-disc mt-1 space-y-0.5">
-                  {warnings.map((warning, i) => (
-                    <li key={i} className="ml-7">
-                      {warning}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {errors.length > 0 && (
-              <div className="mt-4">
-                <div className="font-bold text-lg">Errors</div>
-                <ul className="list-disc mt-1 space-y-0.5">
-                  {errors.map((error, i) => (
-                    <li key={i} className="ml-7">
-                      {error}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+        <div className="px-5 py-6 border-t">
+          <div className="flex flex-row items-center space-x-2 font-medium">
+            <input
+              id="isDoublePage"
+              type="checkbox"
+              checked={isDouble}
+              onChange={(e) => {
+                setIsDouble(e.currentTarget.checked);
+              }}
+              autoFocus={initialPageInfo == null}
+            />
+            <label htmlFor="isDoublePage">Double spread</label>
           </div>
+
+          <div className="mt-4 space-y-3">
+            <PageProperties ctx={lhsCtx} setCtx={setLhsCtx} />
+            {isDouble && <PageProperties ctx={rhsCtx} setCtx={setRhsCtx} />}
+          </div>
+          {warnings.length > 0 && (
+            <div className="mt-8">
+              <div className="font-bold text-lg">Warnings</div>
+              <ul className="list-disc mt-1 space-y-0.5">
+                {warnings.map((warning, i) => (
+                  <li key={i} className="ml-7">
+                    {warning}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {errors.length > 0 && (
+            <div className="mt-4">
+              <div className="font-bold text-lg">Errors</div>
+              <ul className="list-disc mt-1 space-y-0.5">
+                {errors.map((error, i) => (
+                  <li key={i} className="ml-7">
+                    {error}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
-        <footer className="px-5 py-5 border-t flex flex-row justify-end">
-          <Button
-            type="submit"
-            disabled={!canSubmit}
-            autoFocus={initialPageInfo != null}
-          >
-            Next
-          </Button>
-        </footer>
+        <Button
+          type="submit"
+          className="absolute bottom-8 right-8"
+          disabled={!canSubmit}
+          autoFocus={initialPageInfo != null}
+        >
+          Next
+        </Button>
       </form>
     </div>
   );
