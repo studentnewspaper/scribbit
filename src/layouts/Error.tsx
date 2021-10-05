@@ -1,16 +1,10 @@
-import * as Sentry from "@sentry/react";
-import { FallbackRender } from "@sentry/react/esm/errorboundary";
-import clsx from "clsx";
 import React, { FC, HTMLAttributes } from "react";
+import { FallbackRender } from "@sentry/react/esm/errorboundary";
 import Button from "../components/Button";
 
 export type ErrorPageProps = { error: Error } & HTMLAttributes<HTMLElement>;
 
-export const ErrorPage: FallbackRender = ({
-  error,
-  componentStack,
-  resetError,
-}) => {
+export const ErrorPage: FallbackRender = ({ error, resetError }) => {
   return (
     <div className="h-full flex items-center justify-center overflow-y-auto">
       <div className="w-full max-w-xl">
