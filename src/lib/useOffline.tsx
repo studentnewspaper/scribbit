@@ -26,7 +26,15 @@ export const OfflineProvider: FC = ({ children }) => {
     offlineReady: [offlineReady],
     updateServiceWorker,
   } = useRegisterSW({
+    onRegistered: (registration) => {
+      if (registration != null) {
+        console.log(`Service worker registered`);
+      } else {
+        console.warn(`Could not register service worker`);
+      }
+    },
     onRegisterError: (err) => {
+      console.error(err);
       Sentry.captureException(err);
     },
   });
