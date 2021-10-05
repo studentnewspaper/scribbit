@@ -15,7 +15,8 @@
     "isolatedModules": true,
     "importHelpers": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["vite-plugin-pwa/client"]
   },
   "include": ["./src"]
 }

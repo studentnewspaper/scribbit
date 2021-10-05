@@ -9,7 +9,10 @@ export function useValidator() {
   if (validatorRef.current == null) {
     console.log(`Creating worker...`);
     const validator = new Validator();
-    validator.onerror = (err) => alert(err.message);
+
+    validator.onerror = (err) => {
+      throw err;
+    };
 
     validatorRef.current = wrap(validator);
   }

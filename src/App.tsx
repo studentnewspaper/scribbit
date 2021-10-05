@@ -1,4 +1,5 @@
 import React, { FC, useState } from "react";
+import { useRegisterSW } from "virtual:pwa-register/react";
 import ResultsPage from "./layouts/Results";
 import SettingsPage from "./layouts/Settings";
 import UploadPage from "./layouts/Upload";
