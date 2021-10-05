@@ -147,6 +147,14 @@ export const SettingsPage: FC<SettingsPageProps> = ({
     return result;
   })();
 
+  const warnings = (() => {
+    return [lhsCtx.section, isDouble && rhsCtx.section]
+      .filter(isTruthy)
+      .filter((section) => section.length > 0)
+      .filter((section) => !sections.includes(section))
+      .map((section) => `${section} is not a preset section name`);
+  })();
+
   const canSubmit = errors.length == 0;
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -190,12 +198,26 @@ export const SettingsPage: FC<SettingsPageProps> = ({
               <PageProperties ctx={lhsCtx} setCtx={setLhsCtx} />
               {isDouble && <PageProperties ctx={rhsCtx} setCtx={setRhsCtx} />}
             </div>
+            {warnings.length > 0 && (
+              <div className="mt-8">
+                <div className="font-bold text-lg">Warnings</div>
+                <ul className="list-disc mt-1 space-y-0.5">
+                  {warnings.map((warning, i) => (
+                    <li key={i} className="ml-7">
+                      {warning}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             {errors.length > 0 && (
               <div className="mt-4">
                 <div className="font-bold text-lg">Errors</div>
-                <ul className="list-disc list-inside mt-1 space-y-0.5">
+                <ul className="list-disc mt-1 space-y-0.5">
                   {errors.map((error, i) => (
-                    <li key={i}>{error}</li>
+                    <li key={i} className="ml-7">
+                      {error}
+                    </li>
                   ))}
                 </ul>
               </div>
