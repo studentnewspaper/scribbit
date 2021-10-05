@@ -13,7 +13,7 @@ export const App: FC = ({}) => {
   }
 
   if (file != null) {
-    return <SettingsPage onDone={setPageInfos} />;
+    return <SettingsPage onDone={setPageInfos} filename={file.name} />;
   }
 
   return <UploadPage onDone={setFile} />;

@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React, { FC, FormEvent, HTMLAttributes, useState } from "react";
 import Button from "../components/Button";
 import TextBox from "../components/TextBox";
-import { isTruthy } from "../lib/utils";
+import { isTruthy, parsePageFilename } from "../lib/utils";
 import { PageInfo } from "../worker/test";
 
 const sections = [
@@ -91,18 +91,23 @@ export const PageProperties: FC<PagePropertiesProps> = ({
 
 export type SettingsPageProps = {
   onDone: (ctxs: PageInfo[]) => void;
+  filename: string;
 } & HTMLAttributes<HTMLElement>;
 
-export const SettingsPage: FC<SettingsPageProps> = ({ onDone, ...props }) => {
+export const SettingsPage: FC<SettingsPageProps> = ({
+  onDone,
+  filename,
+  ...props
+}) => {
+  const [initialPageInfo] = useState(parsePageFilename(filename) ?? []);
+
   const [isDouble, setIsDouble] = useState(false);
-  const [lhsCtx, setLhsCtx] = useState<PageInfo>({
-    number: 0,
-    section: "",
-  });
-  const [rhsCtx, setRhsCtx] = useState<PageInfo>({
-    number: 0,
-    section: "",
-  });
+  const [lhsCtx, setLhsCtx] = useState<PageInfo>(
+    initialPageInfo[0] ?? { number: 0, section: "" }
+  );
+  const [rhsCtx, setRhsCtx] = useState<PageInfo>(
+    initialPageInfo[1] ?? { number: 0, section: "" }
+  );
 
   const errors = (() => {
     const result: string[] = [];
@@ -176,7 +181,7 @@ export const SettingsPage: FC<SettingsPageProps> = ({ onDone, ...props }) => {
                 onChange={(e) => {
                   setIsDouble(e.currentTarget.checked);
                 }}
-                autoFocus
+                autoFocus={initialPageInfo == null}
               />
               <label htmlFor="isDoublePage">Double spread</label>
             </div>
@@ -198,7 +203,11 @@ export const SettingsPage: FC<SettingsPageProps> = ({ onDone, ...props }) => {
           </div>
         </div>
         <footer className="px-5 py-5 border-t flex flex-row justify-end">
-          <Button type="submit" disabled={!canSubmit}>
+          <Button
+            type="submit"
+            disabled={!canSubmit}
+            autoFocus={initialPageInfo != null}
+          >
             Next
           </Button>
         </footer>

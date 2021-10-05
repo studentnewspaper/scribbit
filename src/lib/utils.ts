@@ -22,6 +22,46 @@ export function makePageFilename(pages: PageInfo[]): string {
   return `${pageNumbers} ${pages[0].section}-${pages[1].section}.sla`;
 }
 
+export function parsePageFilename(filename: string): PageInfo[] | null {
+  const tests: {
+    regex: RegExp;
+    onMatch: (parts: string[]) => PageInfo[] | null;
+  }[] = [
+    {
+      // Single page: 24 Features.sla
+      regex: /^(\d{1,2}) (.+)\.sla$/g,
+      onMatch: (groups) => [
+        { number: parseInt(groups[0]), section: groups[1] },
+      ],
+    },
+    {
+      // Double spread in same section
+      regex: /^(\d{1,2})-(\d{1,2}) (.+).sla$/g,
+      onMatch: (groups) => [
+        { number: parseInt(groups[0]), section: groups[2] },
+        { number: parseInt(groups[1]), section: groups[2] },
+      ],
+    },
+    {
+      // Double spread across sections
+      regex: /^(\d{1,2})-(\d{1,2}) (.+)-(.+).sla$/g,
+      onMatch: (groups) => [
+        { number: parseInt(groups[0]), section: groups[2] },
+        { number: parseInt(groups[1]), section: groups[3] },
+      ],
+    },
+  ];
+
+  for (const test of tests) {
+    for (const match of filename.matchAll(test.regex)) {
+      const result = test.onMatch(match.slice(1));
+      if (result != null) return result;
+    }
+  }
+
+  return null;
+}
+
 export enum FlagImportance {
   High = 0,
   Medium = 1,
