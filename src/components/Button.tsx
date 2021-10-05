@@ -11,7 +11,7 @@ export const Button: FC<ButtonProps> = ({ children, ...props }) => {
         "rounded py-2 px-3 min-w-[120px] border text-center font-bold transition-colors focus-visible:ring-4",
         props.disabled
           ? "bg-gray-100 text-gray-400"
-          : "bg-blue-700 text-white border-blue-400 shadow-lg",
+          : "bg-blue-700 hover:bg-blue-600 text-white border-blue-400 shadow-lg",
         props.className
       )}
     >
