@@ -20,12 +20,6 @@ export const test: Test = {
 
       const expectedNumberText = makePageNumberText(pageNumber);
 
-      console.log(
-        doc.objects
-          .filter((o) => o.type == ObjectType.Text)
-          .filter((o) => o.page == page.index)
-      );
-
       const hasNumber = doc.objects
         .filter((o) => o.type == ObjectType.Text)
         .filter((o) => o.page == page.index)
