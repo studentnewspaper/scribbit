@@ -8,13 +8,7 @@ export type UploadPageProps = {
 } & HTMLAttributes<HTMLElement>;
 
 export const UploadPage: FC<UploadPageProps> = ({ onDone, ...props }) => {
-  const { needsRefresh, offlineReady, update } = useOffline();
-  useEffect(
-    function refreshIfNeeded() {
-      if (needsRefresh) update();
-    },
-    [needsRefresh]
-  );
+  const { offlineReady } = useOffline();
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: ".sla",
@@ -24,6 +18,12 @@ export const UploadPage: FC<UploadPageProps> = ({ onDone, ...props }) => {
       onDone(files[0]);
     },
   });
+
+  const commit = ((): string | null => {
+    const raw = import.meta.env.VITE_COMMIT;
+    if (raw == null || raw == "undefined") return null;
+    return `Build ${raw.slice(0, 8)}`;
+  })();
 
   return (
     <div
@@ -40,13 +40,14 @@ export const UploadPage: FC<UploadPageProps> = ({ onDone, ...props }) => {
       <div className="mt-2 md:mt-4 text-gray-500">
         Click to browse, or drop file here.
       </div>
-      <div
-        className={clsx(
-          "absolute bottom-8 text-blue-400 transition-all",
-          offlineReady ? "opacity-100" : "opacity-0"
+      <div className="absolute bottom-8 text-gray-400 space-x-1">
+        {!offlineReady && (
+          <>
+            <span className="text-blue-400">App available offline</span>
+            <span>&mdash;</span>
+          </>
         )}
-      >
-        App available offline
+        <span>{commit?.slice(0, 8) ?? "Development build"}</span>
       </div>
     </div>
   );

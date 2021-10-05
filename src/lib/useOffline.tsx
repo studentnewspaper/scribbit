@@ -1,17 +1,13 @@
-import React, { createContext, FC, useContext } from "react";
+import React, { createContext, FC, useContext, useState } from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
 import * as Sentry from "@sentry/react";
 
 type OfflineContextType = {
-  needsRefresh: boolean;
   offlineReady: boolean;
-  update: () => void;
 };
 
 const defaultOfflineContext: OfflineContextType = {
-  needsRefresh: false,
   offlineReady: false,
-  update: () => {},
 };
 
 const OfflineContext = createContext<OfflineContextType>(defaultOfflineContext);
@@ -22,16 +18,19 @@ export function useOffline() {
 
 export const OfflineProvider: FC = ({ children }) => {
   const {
-    needRefresh: [needRefresh],
-    offlineReady: [offlineReady],
-    updateServiceWorker,
+    offlineReady: [offlineReady, setOfflineReady],
   } = useRegisterSW({
     onRegistered: (registration) => {
       if (registration != null) {
         console.log(`Service worker registered`);
+        // Assume that we are now offline ready. Vite PWA only updates offlineReady on the first install, so we'll do this
+        setOfflineReady(true);
       } else {
         console.warn(`Could not register service worker`);
       }
+    },
+    onNeedRefresh: () => {
+      window.location.reload();
     },
     onRegisterError: (err) => {
       console.error(err);
@@ -42,9 +41,7 @@ export const OfflineProvider: FC = ({ children }) => {
   return (
     <OfflineContext.Provider
       value={{
-        needsRefresh: needRefresh,
         offlineReady,
-        update: () => updateServiceWorker(true),
       }}
     >
       {children}
