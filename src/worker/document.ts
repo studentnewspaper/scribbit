@@ -1,3 +1,5 @@
+import { isTruthy } from "../lib/utils";
+
 export enum ObjectType {
   Image = 2,
   Text = 4,
@@ -61,6 +63,11 @@ export class Document {
             })();
 
       const pageIndex = parseInt(obj.OwnPage);
+      if (pageIndex < 0 || pageIndex >= this.pages.length) {
+        console.warn(`Page index ${pageIndex} out of bounds`);
+        return null;
+      }
+
       const page = this.pages[pageIndex];
 
       return {
@@ -73,7 +80,7 @@ export class Document {
         src: obj.PFILE as string | undefined,
         text,
       };
-    });
+    }).filter(isTruthy);
   }
 
   static parseSize(input: string) {
