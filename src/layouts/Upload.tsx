@@ -28,31 +28,36 @@ export const UploadPage: FC<UploadPageProps> = ({ onDone, ...props }) => {
   return (
     <div
       {...getRootProps()}
-      className={clsx(
-        "h-full flex flex-col items-center justify-center text-center cursor-pointer relative",
-        props.className
-      )}
+      className={clsx("h-full cursor-pointer relative", props.className)}
     >
-      <input {...getInputProps()} />
-      <h1 className="text-4xl md:text-6xl font-bold tracking-tighter">
-        {isDragActive ? "Drop" : "Upload"} Scribus file
-      </h1>
-      <div className="mt-2 md:mt-4 text-gray-500">
-        Click to browse, or drop file here.
-      </div>
-      <div className="absolute bottom-8">
-        <div
-          className={clsx(
-            "text-blue-600 transition-opacity",
-            offlineReady ? "opacity-100" : "opacity-0"
-          )}
-        >
-          App available offline
+      <div className="h-full flex flex-col items-center justify-center text-center">
+        <input {...getInputProps()} />
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter">
+          {isDragActive ? "Drop" : "Upload"} Scribus file
+        </h1>
+        <div className="mt-2 md:mt-3 text-gray-500">
+          Click to browse, or drop file here.
         </div>
-        <div className="space-x-1 text-gray-300">
+      </div>
+      <div className="absolute bottom-7 right-8 text-right">
+        <div className="space-x-1 text-gray-400">
+          <span
+            className={clsx(
+              "text-blue-500 transition-opacity",
+              offlineReady ? "opacity-100" : "opacity-0"
+            )}
+          >
+            App available offline
+          </span>
+          <span
+            className={clsx(
+              "transition-opacity",
+              offlineReady ? "opacity-100" : "opacity-0"
+            )}
+          >
+            &mdash;
+          </span>
           <span>{commit ?? "Development build"}</span>
-          <span>&mdash;</span>
-          <span>Nicholas Bush</span>
         </div>
       </div>
     </div>
