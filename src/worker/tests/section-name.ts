@@ -38,5 +38,5 @@ export const test: Test = {
 };
 
 function normalise(s: string): string {
-  return s.toLowerCase().trim();
+  return s.toLowerCase().trim().replaceAll("&amp;", "&");
 }
