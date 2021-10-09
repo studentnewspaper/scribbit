@@ -17,12 +17,6 @@ Sentry.init({
   release: commit,
 });
 
-navigator.serviceWorker.getRegistrations().then((regs) => {
-  for (const reg of regs) {
-    reg.unregister();
-  }
-});
-
 ReactDOM.render(
   <React.StrictMode>
     <Sentry.ErrorBoundary fallback={ErrorPage}>
