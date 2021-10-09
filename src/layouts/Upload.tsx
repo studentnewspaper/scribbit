@@ -1,15 +1,12 @@
 import clsx from "clsx";
 import React, { FC, HTMLAttributes, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import { useOffline } from "../lib/useOffline";
 
 export type UploadPageProps = {
   onDone: (file: File) => void;
 } & HTMLAttributes<HTMLElement>;
 
 export const UploadPage: FC<UploadPageProps> = ({ onDone, ...props }) => {
-  const { offlineReady } = useOffline();
-
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: ".sla",
     multiple: false,
@@ -21,7 +18,7 @@ export const UploadPage: FC<UploadPageProps> = ({ onDone, ...props }) => {
 
   const commit = ((): string | null => {
     const raw = import.meta.env.VITE_COMMIT;
-    if (raw == null || raw == "undefined") return null;
+    if (raw == null || raw == "undefined" || raw == "") return null;
     return `Build ${raw.slice(0, 8)}`;
   })();
 
@@ -39,26 +36,8 @@ export const UploadPage: FC<UploadPageProps> = ({ onDone, ...props }) => {
           Click to browse, or drop file here.
         </div>
       </div>
-      <div className="absolute bottom-7 right-8 text-right">
-        <div className="space-x-1 text-gray-400">
-          <span
-            className={clsx(
-              "text-blue-500 transition-opacity",
-              offlineReady ? "opacity-100" : "opacity-0"
-            )}
-          >
-            App available offline
-          </span>
-          <span
-            className={clsx(
-              "transition-opacity",
-              offlineReady ? "opacity-100" : "opacity-0"
-            )}
-          >
-            &mdash;
-          </span>
-          <span>{commit ?? "Development build"}</span>
-        </div>
+      <div className="absolute bottom-7 right-8 text-right text-gray-400">
+        {commit ?? "Development build"}
       </div>
     </div>
   );

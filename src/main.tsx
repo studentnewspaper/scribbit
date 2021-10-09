@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as Sentry from "@sentry/react";
-import { OfflineProvider } from "./lib/useOffline";
 import ErrorPage from "./layouts/Error";
 
 const commit = import.meta.env.VITE_COMMIT ?? undefined;
@@ -18,12 +17,16 @@ Sentry.init({
   release: commit,
 });
 
+navigator.serviceWorker.getRegistrations().then((regs) => {
+  for (const reg of regs) {
+    reg.unregister();
+  }
+});
+
 ReactDOM.render(
   <React.StrictMode>
     <Sentry.ErrorBoundary fallback={ErrorPage}>
-      <OfflineProvider>
-        <App />
-      </OfflineProvider>
+      <App />
     </Sentry.ErrorBoundary>
   </React.StrictMode>,
   document.getElementById("root")
