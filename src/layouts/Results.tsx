@@ -193,6 +193,7 @@ export const ResultsPage: FC<ResultsPageProps> = ({
       </div>
       <div className="px-6 mt-6 pb-6">
         <Button
+          autoFocus
           onClick={() => {
             onReset();
           }}
