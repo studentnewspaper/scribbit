@@ -12,7 +12,11 @@ export const UploadPage: FC<UploadPageProps> = ({ onDone, ...props }) => {
     multiple: false,
     onDrop: (files) => {
       if (files.length != 1) return;
-      onDone(files[0]);
+
+      const file = files[0];
+      if (!file.name.toLowerCase().endsWith(".sla")) return;
+
+      onDone(file);
     },
   });
 
