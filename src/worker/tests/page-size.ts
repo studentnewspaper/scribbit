@@ -6,10 +6,12 @@ const expectedSize = makeSize(pageWidth, pageHeight);
 export const test: Test = {
   name: "Page size",
   description: `Ensures page is ${expectedSize}`,
-  exec: (doc) => {
+  exec: (doc, ctx) => {
     const problems: Result[] = [];
 
-    for (const page of doc.pages) {
+    for (let i = 0; i < ctx.pages.length; i++) {
+      const page = doc.pages[i];
+
       const pageNumber = page.index + 1;
       if (page.width == pageWidth && page.height == pageHeight) continue;
 

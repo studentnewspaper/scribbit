@@ -36,51 +36,55 @@ export class Document {
   }
 
   get pages() {
-    return this.root.PAGE.map((page) => ({
-      x: Document.parseSize(page.PAGEXPOS),
-      y: Document.parseSize(page.PAGEYPOS),
-      width: Document.parseSize(page.PAGEWIDTH),
-      height: Document.parseSize(page.PAGEHEIGHT),
-      index: parseInt(page.NUM),
-    }));
+    return (this.root.PAGE ?? [])
+      .map((page) => ({
+        x: Document.parseSize(page.PAGEXPOS),
+        y: Document.parseSize(page.PAGEYPOS),
+        width: Document.parseSize(page.PAGEWIDTH),
+        height: Document.parseSize(page.PAGEHEIGHT),
+        index: parseInt(page.NUM),
+      }))
+      .sort((a, b) => a.index - b.index);
   }
 
   get objects() {
-    return this.root.PAGEOBJECT.map((obj) => {
-      const text =
-        obj.StoryText == null
-          ? undefined
-          : (() => {
-              const textSelections = ((obj.StoryText ?? []) as any[]).flatMap(
-                (storyText) =>
-                  ((storyText.ITEXT ?? []) as any[]).flatMap((text) => ({
-                    text: text.CH as string,
-                    fontFamily: text.FONT as string | undefined,
-                    fontSize: text.FONTSIZE as string | undefined,
-                  }))
-              );
-              return textSelections;
-            })();
+    return (this.root.PAGEOBJECT ?? [])
+      .map((obj) => {
+        const text =
+          obj.StoryText == null
+            ? undefined
+            : (() => {
+                const textSelections = ((obj.StoryText ?? []) as any[]).flatMap(
+                  (storyText) =>
+                    ((storyText.ITEXT ?? []) as any[]).flatMap((text) => ({
+                      text: text.CH as string,
+                      fontFamily: text.FONT as string | undefined,
+                      fontSize: text.FONTSIZE as string | undefined,
+                    }))
+                );
+                return textSelections;
+              })();
 
-      const pageIndex = parseInt(obj.OwnPage);
-      if (pageIndex < 0 || pageIndex >= this.pages.length) {
-        console.warn(`Page index ${pageIndex} out of bounds`);
-        return null;
-      }
+        const pageIndex = parseInt(obj.OwnPage);
+        if (pageIndex < 0 || pageIndex >= this.pages.length) {
+          console.warn(`Page index ${pageIndex} out of bounds`);
+          return null;
+        }
 
-      const page = this.pages[pageIndex];
+        const page = this.pages[pageIndex];
 
-      return {
-        x: Document.parseSize(obj.XPOS) - page.x,
-        y: Document.parseSize(obj.YPOS) - page.y,
-        width: Document.parseSize(obj.WIDTH),
-        height: Document.parseSize(obj.HEIGHT),
-        page: pageIndex,
-        type: parseInt(obj.PTYPE) as ObjectType,
-        src: obj.PFILE as string | undefined,
-        text,
-      };
-    }).filter(isTruthy);
+        return {
+          x: Document.parseSize(obj.XPOS) - page.x,
+          y: Document.parseSize(obj.YPOS) - page.y,
+          width: Document.parseSize(obj.WIDTH),
+          height: Document.parseSize(obj.HEIGHT),
+          page: pageIndex,
+          type: parseInt(obj.PTYPE) as ObjectType,
+          src: obj.PFILE as string | undefined,
+          text,
+        };
+      })
+      .filter(isTruthy);
   }
 
   static parseSize(input: string) {

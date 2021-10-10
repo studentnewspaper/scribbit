@@ -8,9 +8,11 @@ export const test: Test = {
   exec: (doc, ctx) => {
     const problems: Result[] = [];
 
-    for (const page of doc.pages) {
-      const pageNumber = page.index + 1;
-      const sectionName = ctx.pages[page.index].section;
+    for (let i = 0; i < ctx.pages.length; i++) {
+      if (i >= doc.pages.length) continue;
+
+      const pageCtx = ctx.pages[i];
+      const page = doc.pages[i];
 
       const hasName = doc.objects
         .filter((o) => o.type == ObjectType.Text)
@@ -20,13 +22,15 @@ export const test: Test = {
           if (o.text == null) return false;
 
           const fullText = o.text.map((t) => t.text).join("");
-          return normalise(fullText) == normalise(sectionName);
+          return normalise(fullText) == normalise(pageCtx.section);
         });
 
       if (hasName) continue;
       problems.push(
         fail(
-          `Page ${pageNumber} does not have a <output>${sectionName}</output> header`
+          `Page ${i + 1} does not have a <output>${
+            pageCtx.section
+          }</output> header`
         )
       );
     }

@@ -14,15 +14,18 @@ export const test: Test = {
   exec: (doc, ctx) => {
     const problems: Result[] = [];
 
-    for (const page of doc.pages) {
-      const isLhs = ctx.pages[page.index].number % 2 == 0;
-      const pageNumber = ctx.pages[page.index].number;
+    for (let i = 0; i < ctx.pages.length; i++) {
+      if (i >= doc.pages.length) continue;
 
-      const expectedNumberText = makePageNumberText(pageNumber);
+      const pageCtx = ctx.pages[i];
+      const page = doc.pages[i];
+
+      const isLhs = pageCtx.number % 2 == 0;
+      const expectedNumberText = makePageNumberText(pageCtx.number);
 
       const hasNumber = doc.objects
         .filter((o) => o.type == ObjectType.Text)
-        .filter((o) => o.page == page.index)
+        .filter((o) => o.page == i)
         .filter((o) => o.y <= pageHeaderSearchHeight)
         .filter((o) => o.width <= pageNumberSearchWidth)
         .filter((o) => isInPageNumberArea(o.x, isLhs))
