@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App";
 import * as Sentry from "@sentry/react";
 import ErrorPage from "./layouts/Error";
+import CompatGate from "./components/CompatGate";
 
 const commit = import.meta.env.VITE_COMMIT ?? undefined;
 if (commit != null) {
@@ -20,7 +21,9 @@ Sentry.init({
 ReactDOM.render(
   <React.StrictMode>
     <Sentry.ErrorBoundary fallback={ErrorPage}>
-      <App />
+      <CompatGate>
+        <App />
+      </CompatGate>
     </Sentry.ErrorBoundary>
   </React.StrictMode>,
   document.getElementById("root")
