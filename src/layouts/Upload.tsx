@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { FC, HTMLAttributes, useEffect } from "react";
+import React, { FC, HTMLAttributes, useLayoutEffect } from "react";
 import { useDropzone } from "react-dropzone";
 
 export type UploadPageProps = {
@@ -7,18 +7,23 @@ export type UploadPageProps = {
 } & HTMLAttributes<HTMLElement>;
 
 export const UploadPage: FC<UploadPageProps> = ({ onDone, ...props }) => {
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: ".sla",
-    multiple: false,
-    onDrop: (files) => {
-      if (files.length != 1) return;
+  const { getRootProps, getInputProps, isDragActive, open, rootRef } =
+    useDropzone({
+      accept: ".sla",
+      multiple: false,
+      onDrop: (files) => {
+        if (files.length != 1) return;
 
-      const file = files[0];
-      if (!file.name.toLowerCase().endsWith(".sla")) return;
+        const file = files[0];
+        if (!file.name.toLowerCase().endsWith(".sla")) return;
 
-      onDone(file);
-    },
-  });
+        onDone(file);
+      },
+    });
+
+  useLayoutEffect(() => {
+    rootRef.current?.focus();
+  }, []);
 
   const commit = ((): string | null => {
     const raw = import.meta.env.VITE_COMMIT;
@@ -29,7 +34,16 @@ export const UploadPage: FC<UploadPageProps> = ({ onDone, ...props }) => {
   return (
     <div
       {...getRootProps()}
-      className={clsx("h-full cursor-pointer relative", props.className)}
+      className={clsx(
+        "h-full cursor-pointer relative outline-none",
+        props.className
+      )}
+      onKeyDown={(e) => {
+        if (e.key == "Enter") {
+          open();
+          e.preventDefault();
+        }
+      }}
     >
       <div className="h-full flex flex-col items-center justify-center text-center">
         <input {...getInputProps()} />
