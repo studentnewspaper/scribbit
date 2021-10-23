@@ -12,6 +12,7 @@ import { useValidator } from "../lib/useValidator";
 import type { ResultWithInfo } from "../worker/worker";
 import { Flag, PageInfo, TestInput } from "../worker/test";
 import Button from "../components/Button";
+import { Disclosure } from "@headlessui/react";
 
 export type ResultGroupProps = {
   flag: Flag;
@@ -26,18 +27,20 @@ export const ResultGroup: FC<ResultGroupProps> = ({
   const flagMeta = flagConfig[flag];
 
   return (
-    <div
+    <Disclosure
       {...props}
+      as="div"
+      defaultOpen={flagConfig[flag].open ?? false}
       className={clsx(
         "border shadow-sm rounded overflow-hidden",
         props.className
       )}
     >
-      <div className="flex flex-row justify-between text-xl p-4 bg-gray-50">
+      <Disclosure.Button className="w-full flex flex-row justify-between text-xl p-4 bg-gray-50 hover:bg-gray-100">
         <div className="font-bold">{flagMeta.groupName}</div>
         <div className="tabular-nums">{results.length}</div>
-      </div>
-      <div
+      </Disclosure.Button>
+      <Disclosure.Panel
         className="grid gap-x-3 gap-y-3 p-4 select-text"
         style={{ gridTemplateColumns: `25% 75%` }}
       >
@@ -58,8 +61,8 @@ export const ResultGroup: FC<ResultGroupProps> = ({
             </Fragment>
           );
         })}
-      </div>
-    </div>
+      </Disclosure.Panel>
+    </Disclosure>
   );
 };
 
@@ -163,16 +166,12 @@ export const ResultsPage: FC<ResultsPageProps> = ({
       </header>
       {loadingStatus == LoadingStatus.NotLoading && results != null && (
         <div className="px-5 space-y-5">
-          {[...Object.values(Flag)]
-            .map((flag) => ({
+          {[...Object.entries(flagConfig)]
+            .map(([flag, config]) => ({
               flag: flag as Flag,
               results: results.filter((r) => r.status == flag),
             }))
             .filter(({ results }) => results.length > 0)
-            .sort(
-              (a, b) =>
-                flagConfig[a.flag].importance - flagConfig[b.flag].importance
-            )
             .map(({ flag, results }) => (
               <ResultGroup key={flag} flag={flag} results={results} />
             ))}

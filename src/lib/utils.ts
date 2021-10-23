@@ -62,19 +62,10 @@ export function parsePageFilename(filename: string): PageInfo[] | null {
   return null;
 }
 
-export enum FlagImportance {
-  High = 0,
-  Medium = 1,
-  Low = 2,
-}
-
-export const flagConfig: Record<
-  Flag,
-  { groupName: string; importance: FlagImportance }
-> = {
-  [Flag.Pass]: { groupName: "Passing tests", importance: FlagImportance.Low },
-  [Flag.Fail]: { groupName: "Failing tests", importance: FlagImportance.High },
-  [Flag.Warn]: { groupName: "Warnings", importance: FlagImportance.Medium },
-  [Flag.Message]: { groupName: "Messages", importance: FlagImportance.Low },
-  [Flag.Error]: { groupName: "Errors", importance: FlagImportance.High },
+export const flagConfig: Record<Flag, { groupName: string; open?: boolean }> = {
+  [Flag.Fail]: { groupName: "Failing tests", open: true },
+  [Flag.Warn]: { groupName: "Warnings", open: true },
+  [Flag.Error]: { groupName: "Errors" },
+  [Flag.Message]: { groupName: "Messages" },
+  [Flag.Pass]: { groupName: "Passing tests" },
 };
