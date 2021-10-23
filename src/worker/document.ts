@@ -14,6 +14,7 @@ export class Document {
 
   get root() {
     return this.content["SCRIBUSUTF8NEW"][0]["DOCUMENT"][0] as {
+      DOCDATE: string;
       CheckProfile: any[];
       COLOR: any[];
       HYPHEN: string;
