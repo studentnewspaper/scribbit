@@ -121,7 +121,7 @@ export const ResultsPage: FC<ResultsPageProps> = ({
         Copyediting channel.
         <br />
         <span className="italic text-gray-600">
-          e.g. Editions &rarr; 2021 Sep - Dec &rarr; Edition 3 &rarr;{" "}
+          e.g. Editions &rarr; 2021 Sep - Dec &rarr; Edition 4 &rarr;{" "}
           {pageFilename}
         </span>
       </>
