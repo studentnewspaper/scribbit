@@ -36,7 +36,7 @@ export const ResultGroup: FC<ResultGroupProps> = ({
         props.className
       )}
     >
-      <Disclosure.Button className="w-full flex flex-row justify-between text-xl p-4 bg-gray-50 hover:bg-gray-100">
+      <Disclosure.Button className="w-full flex flex-row justify-between text-lg p-4 bg-gray-50 hover:bg-gray-100">
         <div className="font-bold">{flagMeta.groupName}</div>
         <div className="tabular-nums">{results.length}</div>
       </Disclosure.Button>
@@ -130,6 +130,9 @@ export const ResultsPage: FC<ResultsPageProps> = ({
     return steps;
   })();
 
+  const problemStatuses = [Flag.Fail, Flag.Warn];
+  const hasProblems = results.some((r) => problemStatuses.includes(r.status));
+
   return (
     <div {...props} className={clsx("", props.className)}>
       <header className="px-5 py-6">
@@ -137,6 +140,26 @@ export const ResultsPage: FC<ResultsPageProps> = ({
         <div className="text-4xl font-bold tracking-tight mt-1">{filename}</div>
       </header>
       <div className="px-5 space-y-5">
+        {!hasProblems ? (
+          <div className="bg-green-100 rounded p-4 border border-green-400">
+            <div className="font-bold text-xl text-green-900">Good to go!</div>
+            <p>
+              There were no significant problems with this file. You should
+              follow the steps below to submit it
+            </p>
+          </div>
+        ) : (
+          <div className="bg-red-100 rounded p-4 border border-red-400">
+            <div className="font-bold text-xl text-red-900">
+              Problems detected
+            </div>
+            <p>
+              There were some issues with the uploaded file. Please review the
+              errors and warnings below and make any appropriate fixes before
+              rechecking the file.
+            </p>
+          </div>
+        )}
         {[...Object.entries(flagConfig)]
           .map(([flag, config]) => ({
             flag: flag as Flag,
