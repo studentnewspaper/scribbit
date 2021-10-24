@@ -67,51 +67,23 @@ export const ResultGroup: FC<ResultGroupProps> = ({
 };
 
 export type ResultsPageProps = {
-  file: File;
-  pages: PageInfo[];
+  results: ResultWithInfo[];
+  ctx: TestInput;
+  filename: string;
   onReset: () => void;
-} & HTMLAttributes<HTMLElement>;
-
-enum LoadingStatus {
-  LoadingText,
-  LoadingResults,
-  NotLoading,
-}
+  pages: PageInfo[];
+} & Omit<HTMLAttributes<HTMLElement>, "results">;
 
 export const ResultsPage: FC<ResultsPageProps> = ({
-  file,
+  results,
+  ctx,
   pages,
+  filename,
   onReset,
   ...props
 }) => {
-  const validator = useValidator();
-  const [results, setResults] = useState<ResultWithInfo[] | null>(null);
-  const [ctx, setCtx] = useState<TestInput | null>(null);
-  const [loadingStatus, setLoadingStatus] = useState(LoadingStatus.LoadingText);
-
-  useEffect(function loadResults() {
-    (async () => {
-      if (validator == null)
-        throw new Error("Validator was null when required");
-
-      setLoadingStatus(LoadingStatus.LoadingText);
-      const fileContents = await file.text();
-
-      setLoadingStatus(LoadingStatus.LoadingResults);
-      const { results, ctx } = await validator.analyseFile(fileContents, {
-        pages,
-        filename: file.name,
-      });
-
-      setResults(results);
-      setCtx(ctx);
-      setLoadingStatus(LoadingStatus.NotLoading);
-    })();
-  }, []);
-
   const steps = (() => {
     const steps: ReactNode[] = [];
-    if (results == null || ctx == null) return steps;
 
     const pageFilename = makePageFilename(pages);
 
@@ -162,21 +134,19 @@ export const ResultsPage: FC<ResultsPageProps> = ({
     <div {...props} className={clsx("", props.className)}>
       <header className="px-5 py-6">
         <div className="leading-none text-gray-500">Test results for</div>
-        <div className="text-4xl font-bold tracking-tight">{file.name}</div>
+        <div className="text-4xl font-bold tracking-tight mt-1">{filename}</div>
       </header>
-      {loadingStatus == LoadingStatus.NotLoading && results != null && (
-        <div className="px-5 space-y-5">
-          {[...Object.entries(flagConfig)]
-            .map(([flag, config]) => ({
-              flag: flag as Flag,
-              results: results.filter((r) => r.status == flag),
-            }))
-            .filter(({ results }) => results.length > 0)
-            .map(({ flag, results }) => (
-              <ResultGroup key={flag} flag={flag} results={results} />
-            ))}
-        </div>
-      )}
+      <div className="px-5 space-y-5">
+        {[...Object.entries(flagConfig)]
+          .map(([flag, config]) => ({
+            flag: flag as Flag,
+            results: results.filter((r) => r.status == flag),
+          }))
+          .filter(({ results }) => results.length > 0)
+          .map(({ flag, results }) => (
+            <ResultGroup key={flag} flag={flag} results={results} />
+          ))}
+      </div>
       <div className="px-6 mt-6">
         <div className="font-bold text-lg">Next steps</div>
         <div className="text-gray-600">
@@ -204,4 +174,66 @@ export const ResultsPage: FC<ResultsPageProps> = ({
   );
 };
 
-export default ResultsPage;
+export type ResultsPageWrapperProps = {
+  file: File;
+  pages: PageInfo[];
+  onReset: () => void;
+};
+
+enum LoadingStatus {
+  LoadingText,
+  LoadingResults,
+  NotLoading,
+}
+
+export const ResultsPageWrapper: FC<ResultsPageWrapperProps> = ({
+  file,
+  pages,
+  onReset,
+}) => {
+  const validator = useValidator();
+  const [results, setResults] = useState<ResultWithInfo[] | null>(null);
+  const [ctx, setCtx] = useState<TestInput | null>(null);
+  const [loadingStatus, setLoadingStatus] = useState(LoadingStatus.LoadingText);
+
+  useEffect(function loadResults() {
+    (async () => {
+      if (validator == null)
+        throw new Error("Validator was null when required");
+
+      setLoadingStatus(LoadingStatus.LoadingText);
+      const fileContents = await file.text();
+
+      setLoadingStatus(LoadingStatus.LoadingResults);
+      const { results, ctx } = await validator.analyseFile(fileContents, {
+        pages,
+        filename: file.name,
+      });
+
+      setResults(results);
+      setCtx(ctx);
+      setLoadingStatus(LoadingStatus.NotLoading);
+    })();
+  }, []);
+
+  return loadingStatus == LoadingStatus.NotLoading ? (
+    <ResultsPage
+      results={results!}
+      ctx={ctx!}
+      pages={pages}
+      filename={file.name}
+      onReset={onReset}
+    />
+  ) : (
+    <div className="">
+      <header className="px-5 py-6">
+        <div className="leading-none text-blue-600">Currently testing</div>
+        <div className="text-4xl font-bold tracking-tight mt-1">
+          {file.name}
+        </div>
+      </header>
+    </div>
+  );
+};
+
+export default ResultsPageWrapper;
