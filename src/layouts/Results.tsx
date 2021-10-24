@@ -145,7 +145,7 @@ export const ResultsPage: FC<ResultsPageProps> = ({
             <div className="font-bold text-xl text-green-900">Good to go!</div>
             <p>
               There were no significant problems with this file. You should
-              follow the steps below to submit it
+              follow the steps below to submit it.
             </p>
           </div>
         ) : (
