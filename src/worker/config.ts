@@ -1,5 +1,5 @@
-export const pageWidth = 270;
-export const pageHeight = 350;
+export const pageWidth = 210;
+export const pageHeight = 297;
 export const pageMargin = 11;
 
 export const pageNumberSearchWidth = 17;
